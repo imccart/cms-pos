@@ -13,7 +13,7 @@ pacman::p_load(tidyverse)
 
 # Import raw data ---------------------------------------------------------
 for (y in 1984:1990) {
-  pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+  pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
   
   pos.data <- pos.data %>%
     rename(provider=prov1680,
@@ -41,7 +41,7 @@ for (y in 1984:1990) {
 
 
 y=1991
-pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
 pos.data <- pos.data %>%
   rename(category=prvdr_ctgry_cd,
          category_sub=prvdr_ctgry_sbtyp_cd,
@@ -69,7 +69,7 @@ assign(paste0("pos.",y),pos.data)
 
 
 for (y in 1992:1993) {
-  pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+  pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
   
   pos.data <- pos.data %>%
     rename(category=prvdr_ctgry_cd,
@@ -94,7 +94,7 @@ for (y in 1992:1993) {
 }
 
 y=1994
-pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
 pos.data <- pos.data %>%
   rename(category=prvdr_ctgry_cd,
          category_sub=prvdr_ctgry_sbtyp_cd,         
@@ -117,7 +117,7 @@ assign(paste0("pos.",y),pos.data)
 
 
 for (y in 1995:2010) {
-  pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+  pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
   pos.data <- pos.data %>%
     rename(category=prvdr_ctgry_cd,
            category_sub=prvdr_ctgry_sbtyp_cd,           
@@ -142,7 +142,7 @@ for (y in 1995:2010) {
 
 
 for (y in 2011:2021) {
-  pos.data <- read_csv(paste0("data/POS Data/pos",y,".csv/pos",y,".csv"))
+  pos.data <- read_csv(paste0("data/input/POS Data/pos",y,".csv/pos",y,".csv"))
   colnames(pos.data) <- tolower(colnames(pos.data))
   
   pos.data <- pos.data %>%
@@ -234,7 +234,7 @@ final.pos.data <- final.pos.data %>%
              own_type=="Tribal" ~ "Tribal")
   )
 
-write_tsv(final.pos.data,'data/pos-data-combined.txt',append=FALSE,col_names=TRUE)
+write_tsv(final.pos.data,'data/output/pos-data-combined.txt',append=FALSE,col_names=TRUE)
 
 
 
