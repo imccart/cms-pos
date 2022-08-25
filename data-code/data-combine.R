@@ -2,7 +2,7 @@
 
 ## Date Created:  7/22/2020
 ## Date Edited:   8/25/2022
-## Description:   Analysis file for exercise 1
+## Description:   Code file to import and tidy CMS POS data from 1984-2021
 
 
 # Preliminaries -----------------------------------------------------------
