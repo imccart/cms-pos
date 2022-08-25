@@ -234,47 +234,7 @@ final.pos.data <- final.pos.data %>%
              own_type=="Tribal" ~ "Tribal")
   )
 
-
-
-
-## Keep only short term acute care hospitals
-final.pos.data <- final.pos.data %>%
-  filter(category=="Hospital") %>%
-  group_by(provider) %>%
-  arrange(provider, year) %>%
-  fill(c("category_sub", "own_change", "term_date"), .direction="downup")
-
-
-## Save final dataset
-
-
-
-
-## Full IPPS and POS data
-full.data <- final.pos.data %>%
-  left_join(final.ipps.data, by=c("provider", "year")) %>%
-         state_short=state) %>%
-  select(-state) %>%
-  inner_join(kff.final, by=c("state_short")) %>%
-  mutate(expand = (year>=expand_year & !is.na(expand_year))) %>%
-  rename(expand_ever=expanded)
-
-  
-
-
-ipps.list=c("ipps.1986")
-for (y in 1987:2018) {
-  ipps.list=c(ipps.list, paste0("ipps.",y))
-}
-pos.list=c("pos.1984")
-for (y in 1985:2018) {
-  pos.list=c(pos.list, paste0("pos.",y))
-}
-
-rm(list=c(ipps.list, pos.list, "reg.data", "reg.data.ddd",
-          "event.dat", "event.plot.dat", "event.plot.dat2"))
-save.image("solutions/exercise1/workspace.Rdata")
-
+write_tsv(final.pos.data,'data/pos-data-combined.txt',append=FALSE,col_names=TRUE)
 
 
 
