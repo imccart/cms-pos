@@ -267,31 +267,6 @@ final.hha <- final.pos.data %>% filter(category=="Home Health") %>%
 final.snf <- final.pos.data %>% filter(category=="SNF") %>%
   mutate(own_type =
            case_when(
-             own_type=="01" ~ "Non-profit Church",
-             own_type=="02" ~ "Non-profit Corporation",
-             own_type=="03" ~ "Non-profit Other",
-             own_type=="04" ~ "Profit Individual",
-             own_type=="05" ~ "Profit Partnership",
-             own_type=="06" ~ "Profit Corporation",
-             own_type=="07" ~ "Profit Other",
-             own_type=="08" ~ "Govt State",
-             own_type=="09" ~ "Govt County",
-             own_type=="10" ~ "Govt City",
-             own_type=="11" ~ "Govt City-County",
-             own_type=="12" ~ "Govt and Non-profit",
-             own_type=="13" ~ "Other"),
-         profit_status = 
-           case_when(
-             own_type %in% c("Non-profit Church", "Non-profit Corporation", "Non-profit Other") ~ "Non Profit",
-             own_type %in% c("Profit Individual", "Profit Partnership", "Profit Corporation", "Profit Other") ~ "For Profit",
-             own_type %in% c("Govt State", "Govt County", "Govt City", "Govt City-County", "Govt Hospital District", "Govt Federal") ~ "Government")
-  )
-
-
-## SNF data
-final.hospice <- final.pos.data %>% filter(category=="Hospice") %>%
-  mutate(own_type =
-           case_when(
              own_type=="01" ~ "Profit Individual",
              own_type=="02" ~ "Profit Partnership",
              own_type=="03" ~ "Profit Corporation",
@@ -310,6 +285,31 @@ final.hospice <- final.pos.data %>% filter(category=="Hospice") %>%
              own_type %in% c("Non-profit Church", "Non-profit Corporation", "Non-profit Other") ~ "Non Profit",
              own_type %in% c("Profit Individual", "Profit Partnership", "Profit Corporation", "Profit LLC") ~ "For Profit",
              own_type %in% c("Govt State", "Govt County", "Govt City", "Govt City-County", "Govt Hospital District", "Govt Federal") ~ "Government")
+  )
+
+
+## Hospice data
+final.hospice <- final.pos.data %>% filter(category=="Hospice") %>%
+  mutate(own_type =
+           case_when(
+             own_type=="01" ~ "Non-profit Church",
+             own_type=="02" ~ "Non-profit Corporation",
+             own_type=="03" ~ "Non-profit Other",
+             own_type=="04" ~ "Profit Individual",
+             own_type=="05" ~ "Profit Partnership",
+             own_type=="06" ~ "Profit Corporation",
+             own_type=="07" ~ "Profit Other",
+             own_type=="08" ~ "Govt State",
+             own_type=="09" ~ "Govt County",
+             own_type=="10" ~ "Govt City",
+             own_type=="11" ~ "Govt City-County",
+             own_type=="12" ~ "Govt and Non-profit",
+             own_type=="13" ~ "Other"),
+         profit_status = 
+           case_when(
+             own_type %in% c("Non-profit Church", "Non-profit Corporation", "Non-profit Other") ~ "Non Profit",
+             own_type %in% c("Profit Individual", "Profit Partnership", "Profit Corporation", "Profit Other") ~ "For Profit",
+             own_type %in% c("Govt State", "Govt County", "Govt City", "Govt City-County", "Govt and Non-profit") ~ "Government")
   )
 
 
