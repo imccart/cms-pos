@@ -58,11 +58,12 @@ pos.data <- pos.data %>%
          own_type=gnrl_cntl_type_cd,
          term_date=prov2810) %>%
   mutate(term_date=as.Date(as.character(term_date), format='%y%m%d'),
-         own_change=as.Date(as.character(term_date), format='%y%m%d'),
+         own_change=as.Date(as.character(own_change), format='%y%m%d'),
+         own_change_count=as.numeric(own_change_count),
          state=str_sub(city_state, start=-2),
          city=str_sub(city_state, start=1, end=-2),
          year=y) %>%
-  select(provider, category, category_sub, own_change, beds_cert, beds_tot, name,
+  select(provider, category, category_sub, own_change, own_change_count, beds_cert, beds_tot, name,
          street, city, state, zip, term_date, fac_type, own_type, year) %>%
   filter(provider!='000000')
 
@@ -87,9 +88,10 @@ for (y in 1992:1993) {
            term_date=prov2810,
            state=state_cd) %>%
     mutate(term_date=as.Date(as.character(term_date), format='%y%m%d'),
-           own_change=as.Date(as.character(term_date), format='%y%m%d'),
+           own_change=as.Date(as.character(own_change), format='%y%m%d'),
+           own_change_count=as.numeric(own_change_count),
            year=y) %>%
-    select(provider, category, category_sub, own_change, beds_cert, beds_tot, name,
+    select(provider, category, category_sub, own_change, own_change_count, beds_cert, beds_tot, name,
            street, city, state, zip, term_date, own_type, year)
   
   assign(paste0("pos.",y),pos.data)  
@@ -112,9 +114,10 @@ pos.data <- pos.data %>%
          term_date=trmntn_exprtn_dt,
          state=state_cd) %>%
   mutate(term_date=as.Date(as.character(term_date), format='%y%m%d'),
-         own_change=as.Date(as.character(term_date), format='%y%m%d'),
+         own_change=as.Date(as.character(own_change), format='%y%m%d'),
+         own_change_count=as.numeric(own_change_count),
          year=y) %>%
-  select(provider, category, category_sub, own_change, beds_cert, beds_tot, name,
+  select(provider, category, category_sub, own_change, own_change_count, beds_cert, beds_tot, name,
          street, city, state, zip, term_date, own_type, year)
 assign(paste0("pos.",y),pos.data)  
 
@@ -136,9 +139,10 @@ for (y in 1995:2010) {
            term_date=trmntn_exprtn_dt,
            state=state_cd) %>%
     mutate(term_date=as.Date(as.character(term_date), format='%Y%m%d'),
-           own_change=as.Date(as.character(term_date), format='%Y%m%d'),
+           own_change=as.Date(as.character(own_change), format='%Y%m%d'),
+           own_change_count=as.numeric(own_change_count),
            year=y) %>%
-    select(provider, category, category_sub, own_change, beds_cert, beds_tot, name,
+    select(provider, category, category_sub, own_change, own_change_count, beds_cert, beds_tot, name,
            street, city, state, zip, term_date, own_type, year)
   
   assign(paste0("pos.",y),pos.data)  
@@ -165,9 +169,10 @@ for (y in 2011:2021) {
            term_date=trmntn_exprtn_dt,
            state=state_cd) %>%
     mutate(term_date=as.Date(as.character(term_date), format='%Y%m%d'),
-           own_change=as.Date(as.character(term_date), format='%Y%m%d'),
-           year=y) %>%
-    select(provider, category, category_sub, own_change, beds_cert, beds_tot, name,
+           own_change=as.Date(as.character(own_change), format='%Y%m%d'),
+           year=y,
+           own_change_count=as.numeric(own_change_count)) %>%
+    select(provider, category, category_sub, own_change, own_change_count, beds_cert, beds_tot, name,
            street, city, state, zip, term_date, own_type, year)
   
   assign(paste0("pos.",y),pos.data)  
