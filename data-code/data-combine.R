@@ -47,6 +47,7 @@ pos.data <- pos.data %>%
          category_sub=prvdr_ctgry_sbtyp_cd,
          provider=prvdr_num,
          own_change=chow_dt,
+         own_change_count=chow_cnt,         
          beds_cert=crtfd_bed_cnt,
          beds_tot=bed_cnt,
          name=fac_name,
@@ -76,6 +77,7 @@ for (y in 1992:1993) {
            category_sub=prvdr_ctgry_sbtyp_cd,           
            provider=prvdr_num,
            own_change=chow_dt,
+           own_change_count=chow_cnt,           
            beds_cert=crtfd_bed_cnt,
            beds_tot=bed_cnt,
            name=fac_name,
@@ -100,6 +102,7 @@ pos.data <- pos.data %>%
          category_sub=prvdr_ctgry_sbtyp_cd,         
          provider=prvdr_num,
          own_change=chow_dt,
+         own_change_count=chow_cnt,         
          beds_cert=crtfd_bed_cnt,
          beds_tot=bed_cnt,
          name=fac_name,
@@ -123,6 +126,7 @@ for (y in 1995:2010) {
            category_sub=prvdr_ctgry_sbtyp_cd,           
            provider=prvdr_num,
            own_change=chow_dt,
+           own_change_count=chow_cnt,           
            beds_cert=crtfd_bed_cnt,
            beds_tot=bed_cnt,
            name=fac_name,
@@ -150,6 +154,7 @@ for (y in 2011:2021) {
            category_sub=prvdr_ctgry_sbtyp_cd,           
            provider=prvdr_num,
            own_change=chow_dt,
+           own_change_count=chow_cnt,
            beds_cert=crtfd_bed_cnt,
            beds_tot=bed_cnt,
            name=fac_name,
@@ -178,7 +183,8 @@ for (y in 1984:2021) {
 }
 
 
-## recode relevant variables
+## recode relevant variables...note, sub categories and ownership values change
+## depending on the category type:
 final.pos.data <- final.pos.data %>%
   mutate(category_sub=str_pad(category_sub, width=2, side="left", pad="0")) %>%
   mutate(category = 
@@ -193,15 +199,18 @@ final.pos.data <- final.pos.data %>%
              category=="10" ~ "Nursing",
              category=="11" ~ "Intermediate Care",
              category=="12" ~ "Rural Health Clinic",
-             category=="13" ~ "Outpatient Rehab",
-             category=="14" ~ "ASC",
-             category=="15" ~ "Hospice",
-             category=="16" ~ "Organ Procurement",
-             category %in% c("17","21") ~ "CLIA Lab",
-             category=="18" ~ "Community Health Center",
-             category=="19" ~ "Screening Mammography",
-             category=="20" ~ "Federally Qualified Health Center"),
-         category_sub =
+             category=="14" ~ "Outpatient Rehab",
+             category=="15" ~ "ASC",
+             category=="16" ~ "Hospice",
+             category=="17" ~ "Organ Procurement",
+             category %in% c("18","22") ~ "CLIA Lab",
+             category=="19" ~ "Community Health Center",
+             category=="20" ~ "Screening Mammography",
+             category=="21" ~ "Federally Qualified Health Center"))
+
+## hospital data
+final.hospital <- final.pos.data %>% filter(category=="Hospital") %>%
+  mutate(category_sub =
            case_when(
              category_sub=="01" ~ "Short Term",
              category_sub=="02" ~ "Long Term",
@@ -234,7 +243,79 @@ final.pos.data <- final.pos.data %>%
              own_type=="Tribal" ~ "Tribal")
   )
 
-write_tsv(final.pos.data,'data/output/pos-data-combined.txt',append=FALSE,col_names=TRUE)
+
+## home health data
+final.hha <- final.pos.data %>% filter(category=="Home Health") %>%
+  mutate(own_type =
+           case_when(
+             own_type=="01" ~ "Non-profit Church",
+             own_type=="02" ~ "Non-profit Private",
+             own_type=="03" ~ "Non-profit Other",
+             own_type=="04" ~ "Profit",
+             own_type=="05" ~ "Govt State-County",
+             own_type=="06" ~ "Govt Voluntary",
+             own_type=="07" ~ "Govt Local"),
+         profit_status = 
+           case_when(
+             own_type %in% c("Non-profit Church", "Non-profit Private", "Non-profit Other") ~ "Non Profit",
+             own_type == "Profit" ~ "For Profit",
+             own_type %in% c("Govt State-County", "Govt Local", "Govt Voluntary") ~ "Government")
+  )
+
+
+## SNF data
+final.snf <- final.pos.data %>% filter(category=="SNF") %>%
+  mutate(own_type =
+           case_when(
+             own_type=="01" ~ "Non-profit Church",
+             own_type=="02" ~ "Non-profit Corporation",
+             own_type=="03" ~ "Non-profit Other",
+             own_type=="04" ~ "Profit Individual",
+             own_type=="05" ~ "Profit Partnership",
+             own_type=="06" ~ "Profit Corporation",
+             own_type=="07" ~ "Profit Other",
+             own_type=="08" ~ "Govt State",
+             own_type=="09" ~ "Govt County",
+             own_type=="10" ~ "Govt City",
+             own_type=="11" ~ "Govt City-County",
+             own_type=="12" ~ "Govt and Non-profit",
+             own_type=="13" ~ "Other"),
+         profit_status = 
+           case_when(
+             own_type %in% c("Non-profit Church", "Non-profit Corporation", "Non-profit Other") ~ "Non Profit",
+             own_type %in% c("Profit Individual", "Profit Partnership", "Profit Corporation", "Profit Other") ~ "For Profit",
+             own_type %in% c("Govt State", "Govt County", "Govt City", "Govt City-County", "Govt Hospital District", "Govt Federal") ~ "Government")
+  )
+
+
+## SNF data
+final.hospice <- final.pos.data %>% filter(category=="Hospice") %>%
+  mutate(own_type =
+           case_when(
+             own_type=="01" ~ "Profit Individual",
+             own_type=="02" ~ "Profit Partnership",
+             own_type=="03" ~ "Profit Corporation",
+             own_type=="04" ~ "Non-profit Church",
+             own_type=="05" ~ "Non-profit Corporation",
+             own_type=="06" ~ "Non-profit Other",
+             own_type=="07" ~ "Govt State",
+             own_type=="08" ~ "Govt County",
+             own_type=="09" ~ "Govt City",
+             own_type=="10" ~ "Govt City-County",
+             own_type=="11" ~ "Govt Hospital District",
+             own_type=="12" ~ "Govt Federal",
+             own_type=="13" ~ "Profit LLC"),
+         profit_status = 
+           case_when(
+             own_type %in% c("Non-profit Church", "Non-profit Corporation", "Non-profit Other") ~ "Non Profit",
+             own_type %in% c("Profit Individual", "Profit Partnership", "Profit Corporation", "Profit LLC") ~ "For Profit",
+             own_type %in% c("Govt State", "Govt County", "Govt City", "Govt City-County", "Govt Hospital District", "Govt Federal") ~ "Government")
+  )
+
+
+pos.combined <- bind_rows(final.hospital, final.hha, final.snf, final.hospice)
+
+write_tsv(pos.combined,'data/output/pos-data-combined.txt',append=FALSE,col_names=TRUE)
 
 
 
